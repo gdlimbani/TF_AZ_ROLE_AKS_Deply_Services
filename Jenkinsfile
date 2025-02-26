@@ -13,11 +13,11 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repo') {
-            steps {
-                git 'https://github.com/gdlimbani/TF_AZ_ROLE_AKS.git'
-            }
-        }
+        // stage('Clone Repo') {
+        //     steps {
+        //         git 'https://github.com/gdlimbani/TF_AZ_ROLE_AKS.git'
+        //     }
+        // }
 
         stage('Terraform Init') {
             steps {
