@@ -57,6 +57,5 @@ resource "azurerm_kubernetes_cluster" "aks" {
 resource "azurerm_role_assignment" "aks_role_assignment" {
   principal_id        = "${var.service_principal_id}"
   role_definition_name = azurerm_role_definition.aks_role.name
-  scope               = azurerm_kubernetes_cluster.aks.id
-  
+  scope               = "/subscriptions/${var.subscription_id}/resourceGroups/<your-resource-group>"  
 }
