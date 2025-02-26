@@ -55,7 +55,7 @@ variable "location" {
 variable "role_name" {
   description = "The name of the custom role"
   type        = string
-  default     = "AksClusterAdmin"
+  default     = "gdl-aks-role"
 }
 
 variable "role_description" {
