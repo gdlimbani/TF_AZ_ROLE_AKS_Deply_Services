@@ -7,11 +7,11 @@ provider "azurerm" {
 }
 
 # Create a resource group
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
-  tags = var.tags
-}
+# resource "azurerm_resource_group" "rg" {
+#   name     = var.resource_group_name
+#   location = var.location
+#   tags = var.tags
+# }
 
 
 # Define the role definition
@@ -36,9 +36,9 @@ resource "azurerm_role_definition" "aks_role" {
 # Create AKS Cluster
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = var.aks_cluster_name
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  dns_prefix          = "myakscluster"
+  location            = "${var.location}"
+  resource_group_name = "${var.resource_group_name}"
+  dns_prefix          = "gdl-aks"
 
   default_node_pool {
     name       = "default"
