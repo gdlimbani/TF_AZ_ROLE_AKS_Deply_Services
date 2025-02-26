@@ -15,7 +15,7 @@ pipeline {
                 script {
                     bat '''
                     terraform init
-                    terraform destroy -auto-approv
+                    terraform destroy -auto-approve
                     '''
                 }
             }
