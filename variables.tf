@@ -81,5 +81,5 @@ variable "tags" {
 variable "service_principal_id" {
   description = "The service principal is nothing the app registered using app registration in Microsoft Entra ID in Azure"
   type = string
-  default = "c345892b-bfca-4c21-a820-60beefd39d7f"
+  default = "da165c26-bbff-4494-80c8-80e91bfc07aa"
 }
