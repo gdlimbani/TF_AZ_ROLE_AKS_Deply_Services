@@ -73,16 +73,16 @@ resource "azurerm_kubernetes_cluster_node_pool" "aks_np" {
   node_count            = 2
 }
 
-resource "kubernetes_namespace" "default" {
+resource "kubernetes_namespace" "gdlns" {
   metadata {
-    name = "gdlnm"
+    name = "gdlns"
   }
 }
 
 resource "kubernetes_deployment" "frontend" {
   metadata {
     name      = "frontend-deployment"
-    namespace = kubernetes_namespace.default.metadata[0].name
+    namespace = kubernetes_namespace.gdlns.metadata[0].name
   }
 
   spec {
@@ -117,7 +117,7 @@ resource "kubernetes_deployment" "frontend" {
 resource "kubernetes_deployment" "backend" {
   metadata {
     name      = "backend-deployment"
-    namespace = kubernetes_namespace.default.metadata[0].name
+    namespace = kubernetes_namespace.gdlns.metadata[0].name
   }
 
   spec {
@@ -152,7 +152,7 @@ resource "kubernetes_deployment" "backend" {
 resource "kubernetes_service" "frontend" {
   metadata {
     name      = "frontend-service"
-    namespace = kubernetes_namespace.default.metadata[0].name
+    namespace = kubernetes_namespace.gdlns.metadata[0].name
   }
 
   spec {
@@ -172,7 +172,7 @@ resource "kubernetes_service" "frontend" {
 resource "kubernetes_service" "backend" {
   metadata {
     name      = "backend-service"
-    namespace = kubernetes_namespace.default.metadata[0].name
+    namespace = kubernetes_namespace.gdlns.metadata[0].name
   }
 
   spec {
