@@ -59,6 +59,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
 # Assign role to user
 resource "azurerm_role_assignment" "aks_role_assignment" {
+  depends_on = [azurerm_role_definition.aks_role]
+  
   principal_id        = "da165c26-bbff-4494-80c8-80e91bfc07aa"
   role_definition_name = azurerm_role_definition.aks_role.name
   scope               = azurerm_kubernetes_cluster.aks.id  
