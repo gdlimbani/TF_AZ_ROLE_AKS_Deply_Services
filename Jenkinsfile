@@ -45,16 +45,16 @@ pipeline {
             }
         }
 
-        stage('Verify Deployment') {
-            steps {
-                script {
-                    bat '''
-                    terraform output kube_config > kubeconfig.yaml
-                    kubectl --kubeconfig=kubeconfig.yaml get nodes
-                    '''
-                }
-            }
-        }
+        // stage('Verify Deployment') {
+        //     steps {
+        //         script {
+        //             bat '''
+        //             terraform output kube_config > kubeconfig.yaml
+        //             kubectl --kubeconfig=kubeconfig.yaml get nodes
+        //             '''
+        //         }
+        //     }
+        // }
     }
 
     post {

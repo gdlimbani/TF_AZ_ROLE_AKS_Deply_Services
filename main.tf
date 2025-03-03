@@ -60,8 +60,131 @@ resource "azurerm_kubernetes_cluster" "aks" {
 # Assign role to user
 resource "azurerm_role_assignment" "aks_role_assignment" {
   depends_on = [azurerm_role_definition.aks_role]
-  
+
   principal_id        = "da165c26-bbff-4494-80c8-80e91bfc07aa"
   role_definition_name = azurerm_role_definition.aks_role.name
   scope               = azurerm_kubernetes_cluster.aks.id  
+}
+
+resource "azurerm_kubernetes_cluster_node_pool" "aks_np" {
+  name                  = "gdlnp"
+  kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
+  vm_size               = "Standard_DS2_v2"
+  node_count            = 2
+}
+
+resource "kubernetes_namespace" "default" {
+  metadata {
+    name = "gdlnm"
+  }
+}
+
+resource "kubernetes_deployment" "frontend" {
+  metadata {
+    name      = "frontend-deployment"
+    namespace = kubernetes_namespace.default.metadata[0].name
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "frontend"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "frontend"
+        }
+      }
+
+      spec {
+        container {
+          name  = "frontend"
+          image = "gdlimbani/smartpps-frontend:20241101"
+          port {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_deployment" "backend" {
+  metadata {
+    name      = "backend-deployment"
+    namespace = kubernetes_namespace.default.metadata[0].name
+  }
+
+  spec {
+    replicas = 1
+
+    selector {
+      match_labels = {
+        app = "backend"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = "backend"
+        }
+      }
+
+      spec {
+        container {
+          name  = "backend"
+          image = "gdlimbani/smartpps-backend:20241101"
+          port {
+            container_port = 80
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "frontend" {
+  metadata {
+    name      = "frontend-service"
+    namespace = kubernetes_namespace.default.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      app = "frontend"
+    }
+
+    type = "LoadBalancer"
+
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
+}
+
+resource "kubernetes_service" "backend" {
+  metadata {
+    name      = "backend-service"
+    namespace = kubernetes_namespace.default.metadata[0].name
+  }
+
+  spec {
+    selector = {
+      app = "backend"
+    }
+
+    type = "ClusterIP"
+
+    port {
+      port        = 80
+      target_port = 80
+    }
+  }
 }
