@@ -53,9 +53,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   tags = var.tags
 }
 
+resource "azuread_service_principal" "aks_sp" {
+  client_id = "8778c87a-82d8-4950-9cac-36609e466085"
+}
+
 # Assign role to user
 resource "azurerm_role_assignment" "aks_role_assignment" {
-  principal_id        = "${var.service_principal_id}"
+  principal_id        = azuread_service_principal.aks_sp.object_id
   role_definition_name = azurerm_role_definition.aks_role.name
-  scope               = "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}"  
+  scope               = azurerm_kubernetes_cluster.aks.id  
 }
