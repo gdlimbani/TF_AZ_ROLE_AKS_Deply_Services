@@ -53,13 +53,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   tags = var.tags
 }
 
-resource "azuread_service_principal" "aks_sp" {
-  client_id = "8778c87a-82d8-4950-9cac-36609e466085"
-}
+# resource "azuread_service_principal" "aks_sp" {
+#   client_id = "8778c87a-82d8-4950-9cac-36609e466085"
+# }
 
 # Assign role to user
 resource "azurerm_role_assignment" "aks_role_assignment" {
-  principal_id        = azuread_service_principal.aks_sp.object_id
+  principal_id        = "da165c26-bbff-4494-80c8-80e91bfc07aa"
   role_definition_name = azurerm_role_definition.aks_role.name
   scope               = azurerm_kubernetes_cluster.aks.id  
 }
