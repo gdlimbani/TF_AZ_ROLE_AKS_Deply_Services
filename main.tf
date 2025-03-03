@@ -6,13 +6,12 @@ provider "azurerm" {
   tenant_id       = var.tenant_id
 }
 
-# Create a resource group
-# resource "azurerm_resource_group" "rg" {
-#   name     = var.resource_group_name
-#   location = var.location
-#   tags = var.tags
-# }
-
+provider "kubernetes" {
+  host                   = azurerm_kubernetes_cluster.aks.kube_config.0.host
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.aks.kube_config.0.cluster_ca_certificate)
+}
 
 # Define the role definition
 resource "azurerm_role_definition" "aks_role" {
@@ -31,7 +30,6 @@ resource "azurerm_role_definition" "aks_role" {
     "/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group_name}"
   ]
 }
-
 
 # Create AKS Cluster
 resource "azurerm_kubernetes_cluster" "aks" {
@@ -52,10 +50,6 @@ resource "azurerm_kubernetes_cluster" "aks" {
 
   tags = var.tags
 }
-
-# resource "azuread_service_principal" "aks_sp" {
-#   client_id = "8778c87a-82d8-4950-9cac-36609e466085"
-# }
 
 # Assign role to user
 resource "azurerm_role_assignment" "aks_role_assignment" {
