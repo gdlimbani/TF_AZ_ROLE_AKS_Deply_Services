@@ -6,7 +6,7 @@ pipeline {
         ARM_CLIENT_ID       = credentials('azure-client-id')
         ARM_CLIENT_SECRET   = credentials('azure-client-secret')
         ARM_TENANT_ID       = credentials('azure-tenant-id')
-        KUBECONFIG = credentials('kubeconfig-credential-id')
+        // KUBECONFIG = credentials('kubeconfig-credential-id')
     }
 
     stages {
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     // Retrieve kubeconfig from Terraform output and save to file
-                    def kubeconfig = sh(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
+                    def kubeconfig = bat(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
                     writeFile(file: 'kubeconfig.yaml', text: kubeconfig)
                 }
             }
