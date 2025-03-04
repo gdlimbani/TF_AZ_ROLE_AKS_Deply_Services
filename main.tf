@@ -78,34 +78,39 @@ resource "kubernetes_namespace" "gdlns" {
   }
 }
 
-resource "null_resource" "apply_frontend_deployment" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f frontend-deployment.yaml --namespace=${var.aks_namespace}"
-  }
-
-  depends_on = [azurerm_kubernetes_cluster.aks]
+output "kubeconfig" {
+  value = azurerm_kubernetes_cluster.aks.kube_config_raw
+  sensitive = true
 }
 
-resource "null_resource" "apply_backend_deployment" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f backend-deployment.yaml --namespace=${var.aks_namespace}"
-  }
+# resource "null_resource" "apply_frontend_deployment" {
+#   provisioner "local-exec" {
+#     command = "kubectl apply -f frontend-deployment.yaml --namespace=${var.aks_namespace}"
+#   }
 
-  depends_on = [azurerm_kubernetes_cluster.aks]
-}
+#   depends_on = [azurerm_kubernetes_cluster.aks]
+# }
 
-resource "null_resource" "apply_frontend_service" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f frontend-service.yaml --namespace=${var.aks_namespace}"
-  }
+# resource "null_resource" "apply_backend_deployment" {
+#   provisioner "local-exec" {
+#     command = "kubectl apply -f backend-deployment.yaml --namespace=${var.aks_namespace}"
+#   }
 
-  depends_on = [azurerm_kubernetes_cluster.aks]
-}
+#   depends_on = [azurerm_kubernetes_cluster.aks]
+# }
 
-resource "null_resource" "apply_backend_service" {
-  provisioner "local-exec" {
-    command = "kubectl apply -f backend-service.yaml --namespace=${var.aks_namespace}"
-  }
+# resource "null_resource" "apply_frontend_service" {
+#   provisioner "local-exec" {
+#     command = "kubectl apply -f frontend-service.yaml --namespace=${var.aks_namespace}"
+#   }
 
-  depends_on = [azurerm_kubernetes_cluster.aks]
-}
+#   depends_on = [azurerm_kubernetes_cluster.aks]
+# }
+
+# resource "null_resource" "apply_backend_service" {
+#   provisioner "local-exec" {
+#     command = "kubectl apply -f backend-service.yaml --namespace=${var.aks_namespace}"
+#   }
+
+#   depends_on = [azurerm_kubernetes_cluster.aks]
+# }

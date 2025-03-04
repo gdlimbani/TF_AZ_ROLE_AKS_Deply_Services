@@ -39,40 +39,80 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    terraform apply -auto-approve tfplan
+                    terraform apply -auto-approve tfplan -var-file=terraform.tfvars
                     '''
+                }
+            }
+        }
+
+        stage('Save Kubeconfig') {
+            steps {
+                script {
+                    // Retrieve kubeconfig from Terraform output and save to file
+                    def kubeconfig = sh(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
+                    writeFile(file: 'kubeconfig.yaml', text: kubeconfig)
+                }
+            }
+        }
+
+        stage('Upload Kubeconfig to Jenkins') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-credentials', passwordVariable: 'JENKINS_PASS', usernameVariable: 'JENKINS_USER')]) {
+                    script {
+                        bat '''
+                        curl -u $JENKINS_USER:$JENKINS_PASS -X POST "http://localhost:100/credentials/store/system/domain/_/createCredentials" \
+                        --data-urlencode 'json={
+                          "": "0",
+                          "credentials": {
+                            "scope": "GLOBAL",
+                            "id": "kubeconfig-credential-id",
+                            "secretFile": "kubeconfig.yaml",
+                            "description": "Kubeconfig for AKS",
+                            "$class": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"
+                          }
+                        }'
+                        '''
+                    }
                 }
             }
         }
 
         stage('Apply Frontend Deployment') {
             steps {
-                script {
-                    bat 'kubectl apply -f frontend-deployment.yaml --namespace=gdlns'
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+                    script {
+                        bat 'kubectl apply -f frontend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+                    }
                 }
             }
         }
 
         stage('Apply Backend Deployment') {
             steps {
-                script {
-                    bat 'kubectl apply -f backend-deployment.yaml --namespace=gdlns'
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+                    script {
+                        bat 'kubectl apply -f backend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+                    }
                 }
             }
         }
 
         stage('Apply Frontend Service') {
             steps {
-                script {
-                    bat 'kubectl apply -f frontend-service.yaml --namespace=gdlns'
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+                    script {
+                        bat 'kubectl apply -f frontend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+                    }
                 }
             }
         }
 
         stage('Apply Backend Service') {
             steps {
-                script {
-                    bat 'kubectl apply -f backend-service.yaml --namespace=gdlns'
+                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+                    script {
+                        bat 'kubectl apply -f backend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+                    }
                 }
             }
         }
