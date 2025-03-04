@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    terraform plan -out=tfplan
+                    terraform plan -out=tfplan -var-file=terraform.tfvars
                     '''
                 }
             }
@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    terraform apply -auto-approve tfplan -var-file=terraform.tfvars
+                    terraform apply -auto-approve tfplan
                     '''
                 }
             }
