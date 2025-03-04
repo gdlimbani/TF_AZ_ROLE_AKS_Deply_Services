@@ -58,7 +58,7 @@ resource "azurerm_role_assignment" "aks_role_assignment" {
     azurerm_role_definition.aks_role
   ]
 
-  principal_id        = "da165c26-bbff-4494-80c8-80e91bfc07aa"
+  principal_id        = "${var.service_principal_id}"
   role_definition_name = azurerm_role_definition.aks_role.name
   scope               = azurerm_kubernetes_cluster.aks.id  
 }
@@ -66,7 +66,7 @@ resource "azurerm_role_assignment" "aks_role_assignment" {
 resource "azurerm_kubernetes_cluster_node_pool" "aks_np" {
   name                  = "gdlnp"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  vm_size               = "Standard_DS2_v2"
+  vm_size               = "${var.vm_size}"
   node_count            = 2
 }
 
@@ -74,6 +74,38 @@ resource "kubernetes_namespace" "gdlns" {
   depends_on = [azurerm_kubernetes_cluster.aks]
 
   metadata {
-    name = "gdlns"
+    name = "${var.aks_namespace}"
   }
+}
+
+resource "null_resource" "apply_frontend_deployment" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f frontend-deployment.yaml --namespace=${var.aks_namespace}"
+  }
+
+  depends_on = [azurerm_kubernetes_cluster.aks]
+}
+
+resource "null_resource" "apply_backend_deployment" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f backend-deployment.yaml --namespace=${var.aks_namespace}"
+  }
+
+  depends_on = [azurerm_kubernetes_cluster.aks]
+}
+
+resource "null_resource" "apply_frontend_service" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f frontend-service.yaml --namespace=${var.aks_namespace}"
+  }
+
+  depends_on = [azurerm_kubernetes_cluster.aks]
+}
+
+resource "null_resource" "apply_backend_service" {
+  provisioner "local-exec" {
+    command = "kubectl apply -f backend-service.yaml --namespace=${var.aks_namespace}"
+  }
+
+  depends_on = [azurerm_kubernetes_cluster.aks]
 }

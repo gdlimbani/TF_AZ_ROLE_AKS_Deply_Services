@@ -83,3 +83,9 @@ variable "service_principal_id" {
   type = string
   default = "da165c26-bbff-4494-80c8-80e91bfc07aa"
 }
+
+variable "aks_namespace" {
+  description = "This is used for seperating the deployment from default namespaces that comes with AKS"
+  type = string
+  default = "gdlns"
+}

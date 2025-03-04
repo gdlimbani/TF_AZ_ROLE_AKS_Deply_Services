@@ -48,7 +48,7 @@ pipeline {
         stage('Apply Frontend Deployment') {
             steps {
                 script {
-                    bat 'kubectl apply -f frontend-deployment.yaml'
+                    bat 'kubectl apply -f frontend-deployment.yaml --namespace=gdlns'
                 }
             }
         }
@@ -56,7 +56,7 @@ pipeline {
         stage('Apply Backend Deployment') {
             steps {
                 script {
-                    bat 'kubectl apply -f backend-deployment.yaml'
+                    bat 'kubectl apply -f backend-deployment.yaml --namespace=gdlns'
                 }
             }
         }
@@ -64,7 +64,7 @@ pipeline {
         stage('Apply Frontend Service') {
             steps {
                 script {
-                    bat 'kubectl apply -f frontend-service.yaml'
+                    bat 'kubectl apply -f frontend-service.yaml --namespace=gdlns'
                 }
             }
         }
@@ -72,7 +72,7 @@ pipeline {
         stage('Apply Backend Service') {
             steps {
                 script {
-                    bat 'kubectl apply -f backend-service.yaml'
+                    bat 'kubectl apply -f backend-service.yaml --namespace=gdlns'
                 }
             }
         }
