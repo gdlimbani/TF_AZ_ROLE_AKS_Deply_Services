@@ -28,11 +28,11 @@ pipeline {
         }
 
         success {
-            echo 'Deployment Successful!'
+            echo 'Destroy Successful!'
         }
 
         failure {
-            echo 'Deployment Failed!'
+            echo 'Destroy Failed!'
         }
     }
 }

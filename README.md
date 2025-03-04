@@ -12,4 +12,4 @@ Pre-requisites required to run this Jenkin pipelines.
     - Azure Container Storage Contributor
     - Azure Kubernetes Service Contributor Role
     - Storage Account Contributor
-* For storaing the terraform state, we use storage container from Azure storage account. This storage account needs access for creating the tfstate file and writing , modifying it when terraform apply, terraform destroy commands are executed from jenkins pipeline.
+* For storing the terraform state, we use storage container from Azure storage account. This storage account needs access for creating the tfstate file and writing , modifying it when terraform apply, terraform destroy commands are executed from jenkins pipeline.

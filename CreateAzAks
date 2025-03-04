@@ -45,16 +45,37 @@ pipeline {
             }
         }
 
-        // stage('Verify Deployment') {
-        //     steps {
-        //         script {
-        //             bat '''
-        //             terraform output kube_config > kubeconfig.yaml
-        //             kubectl --kubeconfig=kubeconfig.yaml get nodes
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Apply Frontend Deployment') {
+            steps {
+                script {
+                    bat 'kubectl apply -f frontend-deployment.yaml'
+                }
+            }
+        }
+
+        stage('Apply Backend Deployment') {
+            steps {
+                script {
+                    bat 'kubectl apply -f backend-deployment.yaml'
+                }
+            }
+        }
+
+        stage('Apply Frontend Service') {
+            steps {
+                script {
+                    bat 'kubectl apply -f frontend-service.yaml'
+                }
+            }
+        }
+
+        stage('Apply Backend Service') {
+            steps {
+                script {
+                    bat 'kubectl apply -f backend-service.yaml'
+                }
+            }
+        }
     }
 
     post {
