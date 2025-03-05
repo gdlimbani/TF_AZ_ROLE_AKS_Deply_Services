@@ -112,9 +112,9 @@ pipeline {
     }
 
     post {
-        always {
-            cleanWs()  // Clean the workspace no matter what
-        }
+        // always {
+        //     cleanWs()  // Clean the workspace no matter what
+        // }
 
         success {
             echo 'Deployment Successful!'
