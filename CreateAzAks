@@ -56,73 +56,73 @@ pipeline {
             }
         }
 
-        stage('Upload Kubeconfig to Jenkins') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'jenkins-credentials', passwordVariable: 'JENKINS_PASS', usernameVariable: 'JENKINS_USER')]) {
-                    script {
-                        bat '''
-                        curl -u $JENKINS_USER:$JENKINS_PASS -X POST "http://localhost:100/credentials/store/system/domain/_/createCredentials" \
-                        --data-urlencode 'json={
-                          "": "0",
-                          "credentials": {
-                            "scope": "GLOBAL",
-                            "id": "kubeconfig-credential-id",
-                            "secretFile": "kubeconfig.yaml",
-                            "description": "Kubeconfig for AKS",
-                            "$class": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"
-                          }
-                        }'
-                        '''
-                    }
-                }
-            }
-        }
+        // stage('Upload Kubeconfig to Jenkins') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'jenkins-credentials', passwordVariable: 'JENKINS_PASS', usernameVariable: 'JENKINS_USER')]) {
+        //             script {
+        //                 bat '''
+        //                 curl -u $JENKINS_USER:$JENKINS_PASS -X POST "http://localhost:100/credentials/store/system/domain/_/createCredentials" \
+        //                 --data-urlencode 'json={
+        //                   "": "0",
+        //                   "credentials": {
+        //                     "scope": "GLOBAL",
+        //                     "id": "kubeconfig-credential-id",
+        //                     "secretFile": "kubeconfig.yaml",
+        //                     "description": "Kubeconfig for AKS",
+        //                     "$class": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"
+        //                   }
+        //                 }'
+        //                 '''
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Apply Frontend Deployment') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
-                    script {
-                        bat 'kubectl apply -f frontend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
-                    }
-                }
-            }
-        }
+        // stage('Apply Frontend Deployment') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+        //             script {
+        //                 bat 'kubectl apply -f frontend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Apply Backend Deployment') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
-                    script {
-                        bat 'kubectl apply -f backend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
-                    }
-                }
-            }
-        }
+        // stage('Apply Backend Deployment') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+        //             script {
+        //                 bat 'kubectl apply -f backend-deployment.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Apply Frontend Service') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
-                    script {
-                        bat 'kubectl apply -f frontend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
-                    }
-                }
-            }
-        }
+        // stage('Apply Frontend Service') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+        //             script {
+        //                 bat 'kubectl apply -f frontend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Apply Backend Service') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
-                    script {
-                        bat 'kubectl apply -f backend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
-                    }
-                }
-            }
-        }
+        // stage('Apply Backend Service') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'kubeconfig-credential-id', variable: 'KUBECONFIG_FILE')]) {
+        //             script {
+        //                 bat 'kubectl apply -f backend-service.yaml --namespace=gdlns --kubeconfig=$KUBECONFIG_FILE'
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     post {
-        always {
-            cleanWs()  // Clean the workspace no matter what
-        }
+        // always {
+        //     cleanWs()  // Clean the workspace no matter what
+        // }
 
         success {
             echo 'Deployment Successful!'
