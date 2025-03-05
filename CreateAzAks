@@ -49,36 +49,10 @@ pipeline {
         stage('Save Kubeconfig') {
             steps {
                 script {
-                    // Retrieve kubeconfig from Terraform output and save to file
-                    // def kubeconfig = bat(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
-                    // writeFile(file: 'kubeconfig.yaml', text: kubeconfig)
                     bat 'terraform output -raw kubeconfig > kubeconfig.yaml'
-
                 }
             }
         }
-
-        // stage('Upload Kubeconfig to Jenkins') {
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'jenkins-credentials', passwordVariable: 'JENKINS_PASS', usernameVariable: 'JENKINS_USER')]) {
-        //             script {
-        //                 bat '''
-        //                 curl -u $JENKINS_USER:$JENKINS_PASS -X POST "http://localhost:100/credentials/store/system/domain/_/createCredentials" \
-        //                 --data-urlencode 'json={
-        //                   "": "0",
-        //                   "credentials": {
-        //                     "scope": "GLOBAL",
-        //                     "id": "kubeconfig-credential-id",
-        //                     "secretFile": "kubeconfig.yaml",
-        //                     "description": "Kubeconfig for AKS",
-        //                     "$class": "org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"
-        //                   }
-        //                 }'
-        //                 '''
-        //             }
-        //         }
-        //     }
-        // }
 
         stage('Apply Frontend Deployment') {
             steps {
@@ -114,9 +88,9 @@ pipeline {
     }
 
     post {
-        // always {
-        //     cleanWs()  // Clean the workspace no matter what
-        // }
+        always {
+            cleanWs()  // Clean the workspace no matter what
+        }
 
         success {
             echo 'Deployment Successful!'
