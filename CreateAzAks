@@ -50,8 +50,10 @@ pipeline {
             steps {
                 script {
                     // Retrieve kubeconfig from Terraform output and save to file
-                    def kubeconfig = bat(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
-                    writeFile(file: 'kubeconfig.yaml', text: kubeconfig)
+                    // def kubeconfig = bat(script: 'terraform output -raw kubeconfig', returnStdout: true).trim()
+                    // writeFile(file: 'kubeconfig.yaml', text: kubeconfig)
+                    bat 'terraform output -raw kubeconfig > kubeconfig.yaml'
+
                 }
             }
         }
